@@ -2,14 +2,20 @@ import express from "express";
 import { PORT , MONGO_URL } from "./config.js";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
+import { Task } from "./models/taskModel.js";
 
 
 const app = express();
 app.use(bodyParser.json());
 
 
-app.get("/", (req, res) => {
-  res.send("Hello World");
+//create a task
+app.post("/tasks", async(req, res) => {
+  try{
+    return res.status(201).send(await Task.create(req.body));
+  }catch(error){
+    return res.status(500).send(error.message);
+  }
 });
 
 
