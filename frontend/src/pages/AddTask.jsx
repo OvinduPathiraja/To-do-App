@@ -13,10 +13,10 @@ const AddTask = () => {
   const navigate = useNavigate();
 
   const handleSubmit = () => {
-    const formattedDueDate = format(new Date(dueDate), 'yyyy-MM-dd');
+    const formattedDate = format(new Date(task.date), 'yyyy-MM-dd HH:mm:ss');
     const data = {
       title,
-      dueDate: formattedDueDate,
+      dueDate: formattedDate,
       status,
       description,
     };
