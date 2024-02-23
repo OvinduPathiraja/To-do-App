@@ -4,6 +4,7 @@ import Home from "./pages/Home.jsx";
 // import Task from "./pages/Task.jsx";
 import ShowTask from "./pages/ShowTask.jsx";
 import AddTask from "./pages/AddTask.jsx";
+import UpdateTask from "./pages/UpdateTask.jsx";
 
 function App () {
   return(

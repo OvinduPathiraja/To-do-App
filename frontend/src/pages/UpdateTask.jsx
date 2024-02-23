@@ -1,44 +1,54 @@
-import React from "react";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import BackButton from "../components/BackButton";
-import { format } from "date-fns";
+import React, { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import BackButton from '../components/BackButton';
 
-const AddTask = () => {
-  const [title, setTitle] = useState("");
-  const [dueDate, setDueDate] = useState("");
-  const [status, setStatus] = useState("");
-  const [description, setDescription] = useState("");
-  const navigate = useNavigate();
+const UpdateTask = () => {
+  const { id } = useParams();
+  const [title, setTitle] = useState('');
+  const [dueDate, setDueDate] = useState('');
+  const [description, setDescription] = useState('');
 
-  const handleSubmit = () => {
-    // Convert dueDate string to a Date object
-    const dueDateObject = new Date(dueDate);
-  
-    // Format the date with time zone
-    const formattedDate = format(dueDateObject, 'yyyy-MM-dd');
-  
+  useEffect(() => {
+    const fetchTask = async () => {
+      try {
+        const response = await fetch(`http://localhost:5555/tasks/${id}`);
+        const data = await response.json();
+        setTitle(data.title);
+        setDueDate(data.date);
+        setDescription(data.description);
+      } catch (error) {
+        console.error('Error fetching task data: ', error);
+      }
+    };
+
+    fetchTask();
+  }, [id]);
+
+  const handleUpdate = async () => {
     const data = {
       title,
-      date: formattedDate,
-      status:"Pending",
+      date: dueDate,
       description,
     };
-  
-    console.log('Data to be sent:', data);
-  
-    axios
-      .post('http://localhost:5555/tasks', data)
-      .then(() => {
-        navigate('/');
-      })
-      .catch((error) => {
-        console.error('Error adding task: ', error);
+
+    try {
+      const response = await fetch(`http://localhost:5555/tasks/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
       });
+
+      if (response.ok) {
+        console.log('Task updated successfully');
+      } else {
+        console.error('Error updating task');
+      }
+    } catch (error) {
+      console.error('Error updating task: ', error);
+    }
   };
-  
-  
 
   return (
     <div>
@@ -47,7 +57,7 @@ const AddTask = () => {
       </div>
       <div className="flex flex-col items-center justify-center ">
         <div className="p-4 block min-w-96 mx-auto">
-          <h1 className="text-3xl font-bold">Add Task</h1>
+          <h1 className="text-3xl font-bold">Update Task</h1>
           <div className="flex flex-col rounded-xl w-full p-2">
             <div className="my-4">
               <label htmlFor="title" className="text-l mr-4 text-grey-600">
@@ -73,21 +83,6 @@ const AddTask = () => {
                 className="block w-full p-3 text-gray-900 border rounded-lg bg-gray-50 text-xs dark:bg-gray-100 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
               />
             </div>
-            {/* <div className="my-4">
-              <label htmlFor="status" className="text-l mr-4 text-grey-600">
-                Status
-              </label>
-              <select
-                id="status"
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
-                className="text-l border rounded-lg bg-gray-50 border-gray-600"
-              >
-                <option value="Pending">Pending</option>
-                <option value="In Progress">In Progress</option>
-                <option value="Completed">Completed</option>
-              </select>
-            </div> */}
             <div className="my-4">
               <label
                 htmlFor="description"
@@ -104,11 +99,16 @@ const AddTask = () => {
             </div>
             <div className="my-4 justify-center flex">
               <button
-                onClick={handleSubmit}
+                onClick={handleUpdate}
                 className="bg-blue-500 text-white px-4 py-2 rounded-md "
               >
-                Add Task
+                Update Task
               </button>
+            </div>
+            <div className="my-4 justify-center flex">
+              <Link to={`/taskinfo/${id}`} className="text-indigo-600 hover:text-indigo-900">
+                View Task
+              </Link>
             </div>
           </div>
         </div>
@@ -117,4 +117,4 @@ const AddTask = () => {
   );
 };
 
-export default AddTask;
+export default UpdateTask;

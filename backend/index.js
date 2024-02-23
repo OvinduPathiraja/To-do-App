@@ -1,10 +1,15 @@
 import express from "express";
-import { PORT , MONGO_URL } from "./config.js";
+import dotenv from "dotenv";
+
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
 import TaskRoute from "./routes/TaskRoute.js";
 import cors from "cors";
 
+dotenv.config();
+
+const PORT = process.env.PORT || 5000;
+const MONGO_URL = process.env.MONGO_URL;
 
 const app = express();
 app.use(bodyParser.json());
