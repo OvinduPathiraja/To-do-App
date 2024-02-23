@@ -18,6 +18,16 @@ const Home = () => {
             });
     }, []);
 
+    const deleteTask = (id) => {
+        axios.delete(`http://localhost:5555/tasks/${id}`)
+            .then(() => {
+                setTasks(tasks.filter((task) => task._id !== id));
+            })
+            .catch((error) => {
+                console.error('Error deleting task: ', error);
+            });
+        }
+
     return (
         <div className='p-4'>
             <div className='flex items-center p-2'>
@@ -101,14 +111,14 @@ const Home = () => {
 
 
                                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                <a href="#" className="text-indigo-600 hover:text-indigo-900">
-                                                    Edit
-                                                </a>
+                                                <Link to={`/taskinfo/${task._id}`} className="text-indigo-600 hover:text-indigo-900">
+                                                    View
+                                                </Link>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                <a href="#" className="text-red-600 hover:text-red-900">
+                                                <button onClick={() => deleteTask(task._id)} className="text-red-600 hover:text-red-300">
                                                     Delete
-                                                </a>
+                                                </button>
                                             </td>
                                         </tr>
                                     ))}
