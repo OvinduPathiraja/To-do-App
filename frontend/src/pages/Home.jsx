@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { TASK_URL } from "../config.js";
+import ReusableButton from "../components/ReusableButton.jsx";
+import TaskStatusBadge from "../components/TaskStatusBadge.jsx";
+import MainButton from "../components/MainButton.jsx";
 
 const Home = () => {
   const [tasks, setTasks] = useState([]);
@@ -10,19 +14,19 @@ const Home = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5555/tasks")
+      .get(`${TASK_URL}`)
       .then((response) => {
         setTasks(response.data);
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Error fetching data: ", error);
+        console.error("Error fetching data:   ", error);
       });
   }, []);
 
   const deleteTask = (id) => {
     axios
-      .delete(`http://localhost:5555/tasks/${id}`)
+      .delete(`${TASK_URL}/${id}`)
       .then(() => {
         setTasks(tasks.filter((task) => task._id !== id));
       })
@@ -34,11 +38,10 @@ const Home = () => {
   const updateTask = (id, type) => {
     const newStatus = type === "In Progress" ? "In Progress" : "Pending";
     axios
-      .put(`http://localhost:5555/tasks/${id}`, { status: newStatus })
+      .put(`${TASK_URL}/${id}`, { status: newStatus })
       .then(() => {
-        // Assuming the server updates the task status, you might want to refresh the task list
         axios
-          .get("http://localhost:5555/tasks")
+          .get(`${TASK_URL}`)
           .then((response) => {
             setTasks(response.data);
           })
@@ -62,9 +65,28 @@ const Home = () => {
     selectedTasks.forEach((taskId) => {
       deleteTask(taskId);
     });
-    // Clear the selected tasks after deletion
     setSelectedTasks([]);
     window.location.reload();
+  };
+
+  const filterTasksByStatus = async (status) => {
+    try {
+      const response = await axios.get(`${TASK_URL}`);
+      const allTasks = response.data;
+
+      if (status === "All Tasks") {
+        setTasks(allTasks);
+      } else {
+        const filteredTasks = allTasks.filter((task) => task.status === status);
+        setTasks(filteredTasks);
+      }
+    } catch (error) {
+      console.error("Error fetching data: ", error);
+    }
+  };
+
+  const handleFilterButtonClick = (status) => {
+    filterTasksByStatus(status);
   };
 
   const handleCompleteTasks = () => {
@@ -72,13 +94,12 @@ const Home = () => {
       const data = {
         status: "Completed",
       };
-  
+
       axios
-        .put(`http://localhost:5555/tasks/${taskId}`, data)
+        .put(`${TASK_URL}/${taskId}`, data)
         .then(() => {
-          // Assuming the server updates the task status, you might want to refresh the task list
           axios
-            .get("http://localhost:5555/tasks")
+            .get(`${TASK_URL}`)
             .then((response) => {
               setTasks(response.data);
             })
@@ -90,45 +111,64 @@ const Home = () => {
           console.error("Error updating task status: ", error);
         });
     });
-  
-    // Clear the selected tasks after completing
+
     setSelectedTasks([]);
-    // Reload the page
+
     window.location.reload();
   };
-  
 
   return (
     <div className="p-4">
       <div className="flex items-center p-2">
         <h1 className="text-3xl font-bold">TODO</h1>
       </div>
-      <div className="flex flex-col">
+      <div className="flex flex-col ">
         <div className="overflow-x-auto">
           <div className="p-[100px] w-half flex-box align-middle">
-            <div className="ml-auto mb-4 flex justify-end pr-12">
+            <div className="flex mb-4">
+              <ReusableButton
+                onClick={() => handleFilterButtonClick("All Tasks")}
+              >
+                All Tasks
+              </ReusableButton>
+              <ReusableButton
+                onClick={() => handleFilterButtonClick("Pending")}
+              >
+                Pending
+              </ReusableButton>
+              <ReusableButton
+                onClick={() => handleFilterButtonClick("In Progress")}
+              >
+                In Progress
+              </ReusableButton>
+              <ReusableButton
+                onClick={() => handleFilterButtonClick("Completed")}
+              >
+                Completed
+              </ReusableButton>
+              <div className="flex-grow"></div>
               <Link
                 to="/addtask"
-                className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                className="bg-blue-500 text-white px-4 py-2 rounded-xl"
               >
                 Add Task
               </Link>
             </div>
+
             <div className="overflow-hidden border rounded-lg">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th
-                      scope="col"
-                      className="py-3 pl-4"
-                    >
+                    <th scope="col" className="py-3 pl-4">
                       <input
                         id="checkbox-all"
                         type="checkbox"
                         className="text-blue-600 w-4 h-4 border-gray-200 rounded focus:ring-blue-500"
                         onChange={() => {
-                          const allCheckbox = document.getElementById("checkbox-all");
-                          const checkboxes = document.querySelectorAll("[id^='checkbox-']");
+                          const allCheckbox =
+                            document.getElementById("checkbox-all");
+                          const checkboxes =
+                            document.querySelectorAll("[id^='checkbox-']");
                           checkboxes.forEach((checkbox) => {
                             checkbox.checked = allCheckbox.checked;
                             handleCheckboxChange(checkbox.value);
@@ -180,7 +220,10 @@ const Home = () => {
                             value={task._id}
                             onChange={() => handleCheckboxChange(task._id)}
                           />
-                          <label htmlFor={`checkbox-${task._id}`} className="sr-only">
+                          <label
+                            htmlFor={`checkbox-${task._id}`}
+                            className="sr-only"
+                          >
                             Checkbox
                           </label>
                         </div>
@@ -197,19 +240,7 @@ const Home = () => {
                       </td>
 
                       <td className="px-6 py-4 whitespace-nowrap">
-                        {task.status === "Pending" ? (
-                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-100 text-green-800">
-                            {task.status}
-                          </span>
-                        ) : task.status === "Completed" ? (
-                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                            {task.status}
-                          </span>
-                        ) : (
-                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                            {task.status}
-                          </span>
-                        )}
+                        <TaskStatusBadge status={task.status} />
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         {task.status === "Pending" ? (
@@ -251,15 +282,10 @@ const Home = () => {
               </table>
             </div>
             <div className="mt-4 flex justify-end">
-              <button
-                className="bg-blue-500 text-white px-4 py-2 rounded-md mr-4"
-                onClick={handleClearSelectedTasks}
-              >
-                Clear
-              </button>
-              <button className="bg-blue-500 text-white px-4 py-2 rounded-md" onClick={handleCompleteTasks}>
+              <MainButton onClick={handleClearSelectedTasks}>Clear</MainButton>
+              <MainButton onClick={handleCompleteTasks}>
                 Complete Tasks
-              </button>
+              </MainButton>
             </div>
           </div>
         </div>

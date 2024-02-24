@@ -13,10 +13,7 @@ const AddTask = () => {
   const navigate = useNavigate();
 
   const handleSubmit = () => {
-    // Convert dueDate string to a Date object
     const dueDateObject = new Date(dueDate);
-  
-    // Format the date with time zone
     const formattedDate = format(dueDateObject, 'yyyy-MM-dd');
   
     const data = {
@@ -25,8 +22,6 @@ const AddTask = () => {
       status:"Pending",
       description,
     };
-  
-    console.log('Data to be sent:', data);
   
     axios
       .post('http://localhost:5555/tasks', data)
@@ -37,8 +32,6 @@ const AddTask = () => {
         console.error('Error adding task: ', error);
       });
   };
-  
-  
 
   return (
     <div>
@@ -73,21 +66,6 @@ const AddTask = () => {
                 className="block w-full p-3 text-gray-900 border rounded-lg bg-gray-50 text-xs dark:bg-gray-100 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
               />
             </div>
-            {/* <div className="my-4">
-              <label htmlFor="status" className="text-l mr-4 text-grey-600">
-                Status
-              </label>
-              <select
-                id="status"
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
-                className="text-l border rounded-lg bg-gray-50 border-gray-600"
-              >
-                <option value="Pending">Pending</option>
-                <option value="In Progress">In Progress</option>
-                <option value="Completed">Completed</option>
-              </select>
-            </div> */}
             <div className="my-4">
               <label
                 htmlFor="description"
@@ -99,7 +77,7 @@ const AddTask = () => {
                 id="description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="text-xl block w-full p-3 text-gray-900 border rounded-lg bg-gray-50 dark:bg-gray-100 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                className="text-l block w-full p-2 text-gray-900 border rounded-lg bg-gray-50 dark:bg-gray-100 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
               />
             </div>
             <div className="my-4 justify-center flex">

@@ -4,8 +4,9 @@ import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import { MdEditSquare } from "react-icons/md";
 import "../App.css";
-import { BsArrowLeft } from "react-icons/bs";
-import Spinner from "../components/Spinner";
+import TaskStatusBadge from "../components/TaskStatusBadge";
+import { TASK_URL } from "../config.js";
+import MainButton from "../components/MainButton.jsx";
 
 const ShowTask = () => {
   const [task, setTask] = useState({});
@@ -25,15 +26,24 @@ const ShowTask = () => {
   useEffect(() => {
     const fetchTask = async () => {
       try {
-        const response = await axios.get(`http://localhost:5555/tasks/${id}`);
-        setTask(response.data);
+        const response = await axios.get(`${TASK_URL}/${id}`);
+        const taskData = response.data;
+  
+        // Set the task data to the state variables
+        setTitle(taskData.title);
+        setDueDate(taskData.date);
+        setDescription(taskData.description);
+  
+        setTask(taskData);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching task data: ", error);
       }
     };
-
+  
     fetchTask();
   }, [id]);
+  
 
   const handleUpdate = async () => {
     const data = {
@@ -46,12 +56,12 @@ const ShowTask = () => {
       await axios.put(`http://localhost:5555/tasks/${id}`, data);
       console.log("Task updated successfully");
       setModal(false);
+      window.location.reload();
     } catch (error) {
       console.error("Error updating task: ", error);
     }
   };
 
-  // Function to format date without timezone
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "long", day: "numeric" };
     return new Date(dateString).toLocaleString(undefined, options);
@@ -99,16 +109,11 @@ const ShowTask = () => {
                   id="description"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="text-xl block w-full p-3 text-gray-900 border rounded-lg bg-gray-50 dark:bg-gray-100 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className="text-l block w-full p-3 text-gray-900 border rounded-lg bg-gray-50 dark:bg-gray-100 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 />
               </div>
               <div className="my-4 justify-center flex">
-                <button
-                  onClick={handleUpdate}
-                  className="bg-blue-500 text-white px-4 py-2 rounded-md "
-                >
-                  Update Task
-                </button>
+                <MainButton onClick={handleUpdate}>Update</MainButton>
               </div>
             </div>
             <button
@@ -124,7 +129,7 @@ const ShowTask = () => {
       <BackButton destination="/" />
 
       <div className="p-4 flex justify-center ">
-        <div className="pr-12">
+        <div >
           <div className="flex flex-col w-fit p-4">
             <div className="my-4">
               <p className="font-serif text-3xl font-bold">{task.title}</p>
@@ -136,27 +141,13 @@ const ShowTask = () => {
         </div>
         <div className="pl-12">
           <button onClick={toggleModal}>
-            <MdEditSquare className="w-10 h-10" />
+            <MdEditSquare className="w-10 h-10 mt-8" />
           </button>
-          <div className="flex flex-col w-fit p-4">
-            <div className="my-4 ">
-              <span className="text-xl">{formatDate(task.date)}</span>
-            </div>
+          <div className="flex flex-col w-fit pt-6">
             <div className="my-4">
-              {task.status === "Pending" ? (
-                <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-100 text-green-800">
-                  {task.status}
-                </span>
-              ) : task.status === "Completed" ? (
-                <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                  {task.status}
-                </span>
-              ) : (
-                <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                  {task.status}
-                </span>
-              )}
+              <TaskStatusBadge status={task.status} />
             </div>
+              <span className="text-xl">{formatDate(task.date)}</span>
           </div>
         </div>
       </div>
