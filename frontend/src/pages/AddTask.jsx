@@ -24,7 +24,7 @@ const AddTask = () => {
     };
   
     axios
-      .post('http://localhost:5555/tasks', data)
+      .post(`${import.meta.env.VITE_APP_API_URL}/tasks`, data)
       .then(() => {
         navigate('/');
       })

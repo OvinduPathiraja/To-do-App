@@ -11,7 +11,7 @@ const UpdateTask = () => {
   useEffect(() => {
     const fetchTask = async () => {
       try {
-        const response = await fetch(`http://localhost:5555/tasks/${id}`);
+        const response = await fetch(`${import.meta.env.VITE_APP_API_URL}/tasks/${id}`);
         const data = await response.json();
         setTitle(data.title);
         setDueDate(data.date);
@@ -32,7 +32,7 @@ const UpdateTask = () => {
     };
 
     try {
-      const response = await fetch(`http://localhost:5555/tasks/${id}`, {
+      const response = await fetch(`${import.meta.env.VITE_APP_API_URL}/tasks/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

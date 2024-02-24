@@ -12,9 +12,9 @@ const Home = () => {
   const [selectedTasks, setSelectedTasks] = useState([]);
   const type = "";
 
-  useEffect(() => {
+  useEffect(() => {console.log("process.env.REACT_APP_API_URL")
     axios
-      .get(`${TASK_URL}`)
+      .get(`${import.meta.env.VITE_APP_API_URL}/tasks`)
       .then((response) => {
         setTasks(response.data);
         setLoading(false);
@@ -23,10 +23,11 @@ const Home = () => {
         console.error("Error fetching data:   ", error);
       });
   }, []);
+  
 
   const deleteTask = (id) => {
     axios
-      .delete(`${TASK_URL}/${id}`)
+      .delete(`${import.meta.env.VITE_APP_API_URL}/tasks/${id}`)
       .then(() => {
         setTasks(tasks.filter((task) => task._id !== id));
       })
@@ -38,10 +39,10 @@ const Home = () => {
   const updateTask = (id, type) => {
     const newStatus = type === "In Progress" ? "In Progress" : "Pending";
     axios
-      .put(`${TASK_URL}/${id}`, { status: newStatus })
+      .put(`${import.meta.env.VITE_APP_API_URL}/tasks/${id}`, { status: newStatus })
       .then(() => {
         axios
-          .get(`${TASK_URL}`)
+          .get(`${import.meta.env.VITE_APP_API_URL}`)
           .then((response) => {
             setTasks(response.data);
           })
@@ -71,7 +72,7 @@ const Home = () => {
 
   const filterTasksByStatus = async (status) => {
     try {
-      const response = await axios.get(`${TASK_URL}`);
+      const response = await axios.get(`${import.meta.env.VITE_APP_API_URL}/tasks`);
       const allTasks = response.data;
 
       if (status === "All Tasks") {
@@ -96,10 +97,10 @@ const Home = () => {
       };
 
       axios
-        .put(`${TASK_URL}/${taskId}`, data)
+        .put(`${import.meta.env.VITE_APP_API_URL}/tasks/${taskId}`, data)
         .then(() => {
           axios
-            .get(`${TASK_URL}`)
+            .get(`${import.meta.env.VITE_APP_API_URL}`)
             .then((response) => {
               setTasks(response.data);
             })

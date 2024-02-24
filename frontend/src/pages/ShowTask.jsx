@@ -26,7 +26,7 @@ const ShowTask = () => {
   useEffect(() => {
     const fetchTask = async () => {
       try {
-        const response = await axios.get(`${TASK_URL}/${id}`);
+        const response = await axios.get(`${import.meta.env.VITE_APP_API_URL}/tasks/${id}`);
         const taskData = response.data;
   
         // Set the task data to the state variables
@@ -53,7 +53,7 @@ const ShowTask = () => {
     };
 
     try {
-      await axios.put(`http://localhost:5555/tasks/${id}`, data);
+      await axios.put(`${import.meta.env.VITE_APP_API_URL}/tasks/${id}`, data);
       console.log("Task updated successfully");
       setModal(false);
       window.location.reload();
