@@ -5,6 +5,7 @@ import { TASK_URL } from "../config.js";
 import ReusableButton from "../components/ReusableButton.jsx";
 import TaskStatusBadge from "../components/TaskStatusBadge.jsx";
 import MainButton from "../components/MainButton.jsx";
+import TaskStatusSelector from "../components/TaskStatusSelector.jsx";
 
 const Home = () => {
   const [tasks, setTasks] = useState([]);
@@ -12,7 +13,8 @@ const Home = () => {
   const [selectedTasks, setSelectedTasks] = useState([]);
   const type = "";
 
-  useEffect(() => {console.log("process.env.REACT_APP_API_URL")
+  useEffect(() => {
+    console.log("process.env.REACT_APP_API_URL");
     axios
       .get(`${import.meta.env.VITE_APP_API_URL}/tasks`)
       .then((response) => {
@@ -23,7 +25,6 @@ const Home = () => {
         console.error("Error fetching data:   ", error);
       });
   }, []);
-  
 
   const deleteTask = (id) => {
     axios
@@ -39,7 +40,9 @@ const Home = () => {
   const updateTask = (id, type) => {
     const newStatus = type === "In Progress" ? "In Progress" : "Pending";
     axios
-      .put(`${import.meta.env.VITE_APP_API_URL}/tasks/${id}`, { status: newStatus })
+      .put(`${import.meta.env.VITE_APP_API_URL}/tasks/${id}`, {
+        status: newStatus,
+      })
       .then(() => {
         axios
           .get(`${import.meta.env.VITE_APP_API_URL}`)
@@ -72,7 +75,9 @@ const Home = () => {
 
   const filterTasksByStatus = async (status) => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_APP_API_URL}/tasks`);
+      const response = await axios.get(
+        `${import.meta.env.VITE_APP_API_URL}/tasks`
+      );
       const allTasks = response.data;
 
       if (status === "All Tasks") {
@@ -241,7 +246,11 @@ const Home = () => {
                       </td>
 
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <TaskStatusBadge status={task.status} />
+                        <TaskStatusSelector
+                          taskId={task._id}
+                          currentStatus={task.status}
+                          updateTaskStatus={updateTask}
+                        />
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         {task.status === "Pending" ? (
