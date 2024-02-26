@@ -6,10 +6,7 @@
 - [Getting Started](#getting-started)
   - [Deployments](#deployments)
   - [Installation](#installation)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
-- [Acknowledgments](#acknowledgments)
+- [Screennshots](#screennshots)
 
 ## Introduction
 Welcome to To-Do App – a powerful and user-friendly task management solution that helps you stay organized and boost your productivity.
@@ -48,18 +45,28 @@ npm install
 ```bash
 npm run dev
 ```
-The website will run in your local machine since the backend is running on a seperate EC2 instance in AWS. If need to run the backend locally as well
+Now the website will run in your local machine since the backend is running on a seperate EC2 instance in AWS. 
+
+If need to run the backend locally as well. Following the below steps, Not compulsory 
 
 ```bash
 cd ..
 cd ./backend
 npm install
 ```
+Open the code in vs code or simmilar code editor platform
+
+Update the .env file in the frontend folder
+```js
+VITE_APP_API_URL=http://localhost:3000/
+```
+Then run the following command in the terminal
 ```bash
 npm run dev
 ```
 
 
+## Screennshots
 <h1>To Do Application</h1>
 
 ![Screenshot 2024-02-26 075505](https://github.com/OvinduPathiraja/To-do-App/assets/128158494/ac3758ed-318d-4927-8c36-b0894c8175cb)
@@ -70,11 +77,33 @@ npm run dev
 ![Screenshot 2024-02-26 083146](https://github.com/OvinduPathiraja/To-do-App/assets/128158494/d546830e-4b71-4d73-80cd-ec7c57ebb484)
 
 
-![Screenshot 2024-02-26 082505](https://github.com/OvinduPathiraja/To-do-App/assets/128158494/2df80e7e-fa77-4aac-aff4-8f503bc67d4a)
 
-![Screenshot 2024-02-26 082518](https://github.com/OvinduPathiraja/To-do-App/assets/128158494/187a19a2-a27e-4d52-8bed-8c91ef1772fe)
+
+![Screenshot 2024-02-26 082505](https://github.com/OvinduPathiraja/To-do-App/assets/128158494/2df80e7e-fa77-4aac-aff4-8f503bc67d4a)
 ![Screenshot 2024-02-26 082618](https://github.com/OvinduPathiraja/To-do-App/assets/128158494/13cf7d34-eacf-4861-a9aa-b1d9b44f8f52)
 
+![Screenshot 2024-02-26 082518](https://github.com/OvinduPathiraja/To-do-App/assets/128158494/187a19a2-a27e-4d52-8bed-8c91ef1772fe)
 
+
+
+
+
+
+
+![Screenshot 2024-02-26 092541](https://github.com/OvinduPathiraja/To-do-App/assets/128158494/15fbae04-f713-45df-afc3-35d62847f030)
+
+![Screenshot 2024-02-26 092659](https://github.com/OvinduPathiraja/To-do-App/assets/128158494/6578ff2b-6300-4c3d-8df9-b61c038054c2)
+
+
+![Screenshot 2024-02-26 092759](https://github.com/OvinduPathiraja/To-do-App/assets/128158494/37b7a2b4-0026-4097-b475-8ab0902fe0fc)
+
+![Screenshot 2024-02-26 092626](https://github.com/OvinduPathiraja/To-do-App/assets/128158494/8cc412d1-3e5e-40e5-8e1b-574302b57776)
+
+![Screenshot 2024-02-26 092716](https://github.com/OvinduPathiraja/To-do-App/assets/128158494/82072bb0-50fe-48e5-94bb-38e460df1c7c)
+
+![Screenshot 2024-02-26 092744](https://github.com/OvinduPathiraja/To-do-App/assets/128158494/58f59534-be06-4284-97f8-800c6b012166)
+
+![Screenshot 2024-02-26 092614](https://github.com/OvinduPathiraja/To-do-App/assets/128158494/269997fc-dcd2-44be-a125-384643e10ff0)
+![Screenshot 2024-02-26 092601](https://github.com/OvinduPathiraja/To-do-App/assets/128158494/f660ad26-1c79-4d2f-b66e-5fa263d1cca3)
 
 
