@@ -94,11 +94,15 @@ npm run dev
 
 
 
-![Screenshot 2024-02-26 092659](https://github.com/OvinduPathiraja/To-do-App/assets/128158494/6578ff2b-6300-4c3d-8df9-b61c038054c2)
 
 ![Screenshot 2024-02-26 092759](https://github.com/OvinduPathiraja/To-do-App/assets/128158494/37b7a2b4-0026-4097-b475-8ab0902fe0fc)
 
 ![Screenshot 2024-02-26 092626](https://github.com/OvinduPathiraja/To-do-App/assets/128158494/8cc412d1-3e5e-40e5-8e1b-574302b57776)
+
+
+
+
+![Screenshot 2024-02-26 092659](https://github.com/OvinduPathiraja/To-do-App/assets/128158494/6578ff2b-6300-4c3d-8df9-b61c038054c2)
 
 ![Screenshot 2024-02-26 092716](https://github.com/OvinduPathiraja/To-do-App/assets/128158494/82072bb0-50fe-48e5-94bb-38e460df1c7c)
 
