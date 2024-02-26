@@ -1,63 +1,96 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { TASK_URL } from "../config.js";
 import ReusableButton from "../components/ReusableButton.jsx";
-import TaskStatusBadge from "../components/TaskStatusBadge.jsx";
-import MainButton from "../components/MainButton.jsx";
 import TaskStatusSelector from "../components/TaskStatusSelector.jsx";
+import MainButton from "../components/MainButton.jsx";
 
 const Home = () => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedTasks, setSelectedTasks] = useState([]);
-  const type = "";
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_APP_API_URL}/tasks`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+          },
+        }
+      );
+
+      setTasks(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching data: ", error);
+    }
+  };
 
   useEffect(() => {
-    console.log("process.env.REACT_APP_API_URL");
-    axios
-      .get(`${import.meta.env.VITE_APP_API_URL}/tasks`)
-      .then((response) => {
-        setTasks(response.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:   ", error);
-      });
+    fetchData();
   }, []);
 
-  const deleteTask = (id) => {
-    axios
-      .delete(`${import.meta.env.VITE_APP_API_URL}/tasks/${id}`)
-      .then(() => {
-        setTasks(tasks.filter((task) => task._id !== id));
-      })
-      .catch((error) => {
-        console.error("Error deleting task: ", error);
+  const deleteTask = async (id) => {
+    try {
+      const token = localStorage.getItem("jwt");
+      await axios.delete(`${import.meta.env.VITE_APP_API_URL}/tasks/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
+      setTasks((prevTasks) => prevTasks.filter((task) => task._id !== id));
+    } catch (error) {
+      console.error("Error deleting task: ", error);
+    }
+  };
+  
+
+  const handleClearSelectedTasks = async () => {
+    try {
+      await Promise.all(selectedTasks.map((taskId) => deleteTask(taskId)));
+      console.log("All selected tasks deleted successfully.");
+      setSelectedTasks([]);
+      fetchData(); // Update state directly, no need for window.location.reload()
+    } catch (error) {
+      console.error("Error clearing selected tasks: ", error);
+    }
   };
 
   const updateTask = (id, type) => {
-    const newStatus = type === "In Progress" ? "In Progress" : "Pending";
+    let newStatus;
+  
+    switch (type) {
+      case 'In Progress':
+        newStatus = 'In Progress';
+        break;
+      case 'Completed':
+      default:
+        newStatus = 'Pending';
+        break;
+    }
+  
+    const token = localStorage.getItem('jwt');
+  
     axios
-      .put(`${import.meta.env.VITE_APP_API_URL}/tasks/${id}`, {
-        status: newStatus,
-      })
+      .put(
+        `${import.meta.env.VITE_APP_API_URL}/tasks/${id}`,
+        { status: newStatus },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       .then(() => {
-        axios
-          .get(`${import.meta.env.VITE_APP_API_URL}`)
-          .then((response) => {
-            setTasks(response.data);
-          })
-          .catch((error) => {
-            console.error("Error fetching data: ", error);
-          });
+        fetchData(); // Fetch data after updating the task
       })
       .catch((error) => {
-        console.error("Error updating task: ", error);
+        console.error('Error updating task: ', error);
       });
   };
-
+  
   const handleCheckboxChange = (id) => {
     const updatedSelectedTasks = selectedTasks.includes(id)
       ? selectedTasks.filter((taskId) => taskId !== id)
@@ -65,18 +98,16 @@ const Home = () => {
     setSelectedTasks(updatedSelectedTasks);
   };
 
-  const handleClearSelectedTasks = () => {
-    selectedTasks.forEach((taskId) => {
-      deleteTask(taskId);
-    });
-    setSelectedTasks([]);
-    window.location.reload();
-  };
-
   const filterTasksByStatus = async (status) => {
     try {
+      const token = localStorage.getItem("jwt");
       const response = await axios.get(
-        `${import.meta.env.VITE_APP_API_URL}/tasks`
+        `${import.meta.env.VITE_APP_API_URL}/tasks`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       const allTasks = response.data;
 
@@ -95,33 +126,40 @@ const Home = () => {
     filterTasksByStatus(status);
   };
 
-  const handleCompleteTasks = () => {
-    selectedTasks.forEach((taskId) => {
-      const data = {
-        status: "Completed",
-      };
-
-      axios
-        .put(`${import.meta.env.VITE_APP_API_URL}/tasks/${taskId}`, data)
-        .then(() => {
-          axios
-            .get(`${import.meta.env.VITE_APP_API_URL}`)
-            .then((response) => {
-              setTasks(response.data);
-            })
-            .catch((error) => {
-              console.error("Error fetching data: ", error);
-            });
-        })
-        .catch((error) => {
-          console.error("Error updating task status: ", error);
-        });
-    });
-
-    setSelectedTasks([]);
-
-    window.location.reload();
-  };
+  const handleCompleteTasks = async () => {
+    try {
+      const token = localStorage.getItem("jwt");
+  
+      for (const taskId of selectedTasks) {
+        const data = {
+          status: "Completed",
+        };
+  
+        await axios.put(
+          `${import.meta.env.VITE_APP_API_URL}/tasks/${taskId}`,
+          data,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+      }
+  
+      setSelectedTasks((prevSelectedTasks) => {
+        // Clear the selected tasks
+        const updatedSelectedTasks = [];
+  
+        // Fetch fresh data after completing tasks
+        fetchData();
+  
+        return updatedSelectedTasks;
+      });
+      window.location.reload();
+    } catch (error) {
+      console.error("Error completing tasks: ", error);
+    }
+  };  
 
   return (
     <div className="p-4">
@@ -252,24 +290,6 @@ const Home = () => {
                           updateTaskStatus={updateTask}
                         />
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        {task.status === "Pending" ? (
-                          <button
-                            onClick={() => updateTask(task._id, "In Progress")}
-                            className="text-green-600 hover:text-red-300"
-                          >
-                            Activate
-                          </button>
-                        ) : (
-                          <button
-                            onClick={() => updateTask(task._id, "Pending")}
-                            className="text-red-600 hover:text-green-300"
-                          >
-                            Deactivate
-                          </button>
-                        )}
-                      </td>
-
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <Link
                           to={`/taskinfo/${task._id}`}

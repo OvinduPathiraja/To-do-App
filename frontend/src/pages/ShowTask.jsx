@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import BackButton from "../components/BackButton";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 import { MdEditSquare } from "react-icons/md";
 import "../App.css";
 import TaskStatusBadge from "../components/TaskStatusBadge";
-import { TASK_URL } from "../config.js";
 import MainButton from "../components/MainButton.jsx";
 
 const ShowTask = () => {
@@ -26,24 +25,31 @@ const ShowTask = () => {
   useEffect(() => {
     const fetchTask = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_APP_API_URL}/tasks/${id}`);
+        // Retrieve JWT token from storage (assuming it's stored after login)
+        const token = localStorage.getItem('jwt');
+
+        const response = await axios.get(`${import.meta.env.VITE_APP_API_URL}/tasks/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
         const taskData = response.data;
-  
+
         // Set the task data to the state variables
         setTitle(taskData.title);
         setDueDate(taskData.date);
         setDescription(taskData.description);
-  
+
         setTask(taskData);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching task data: ", error);
       }
     };
-  
+
     fetchTask();
   }, [id]);
-  
 
   const handleUpdate = async () => {
     const data = {
@@ -53,7 +59,14 @@ const ShowTask = () => {
     };
 
     try {
-      await axios.put(`${import.meta.env.VITE_APP_API_URL}/tasks/${id}`, data);
+      // Retrieve JWT token from storage (assuming it's stored after login)
+      const token = localStorage.getItem('jwt');
+
+      await axios.put(`${import.meta.env.VITE_APP_API_URL}/tasks/${id}`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       console.log("Task updated successfully");
       setModal(false);
       window.location.reload();
@@ -129,7 +142,7 @@ const ShowTask = () => {
       <BackButton destination="/" />
 
       <div className="p-4 flex justify-center ">
-        <div >
+        <div>
           <div className="flex flex-col w-fit p-4">
             <div className="my-4">
               <p className="font-serif text-3xl font-bold">{task.title}</p>
@@ -147,7 +160,7 @@ const ShowTask = () => {
             <div className="my-4">
               <TaskStatusBadge status={task.status} />
             </div>
-              <span className="text-xl">{formatDate(task.date)}</span>
+            <span className="text-xl">{formatDate(task.date)}</span>
           </div>
         </div>
       </div>

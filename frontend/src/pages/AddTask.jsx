@@ -1,5 +1,4 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import BackButton from "../components/BackButton";
@@ -8,25 +7,31 @@ import { format } from "date-fns";
 const AddTask = () => {
   const [title, setTitle] = useState("");
   const [dueDate, setDueDate] = useState("");
-  const [status, setStatus] = useState("");
   const [description, setDescription] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = () => {
     const dueDateObject = new Date(dueDate);
     const formattedDate = format(dueDateObject, 'yyyy-MM-dd');
-  
+
+    // Retrieve JWT token from storage (assuming it's stored after login)
+    const token = localStorage.getItem('jwt');
+
     const data = {
       title,
       date: formattedDate,
-      status:"Pending",
+      status: "Pending",
       description,
     };
-  
+
     axios
-      .post(`${import.meta.env.VITE_APP_API_URL}/tasks`, data)
+      .post(`${import.meta.env.VITE_APP_API_URL}/tasks`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then(() => {
-        navigate('/');
+        navigate('/home');
       })
       .catch((error) => {
         console.error('Error adding task: ', error);

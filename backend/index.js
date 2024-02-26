@@ -1,10 +1,10 @@
 import express from "express";
 import dotenv from "dotenv";
-
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
 import TaskRoute from "./routes/TaskRoute.js";
 import cors from "cors";
+
 
 dotenv.config();
 
@@ -18,6 +18,7 @@ app.use(cors());
 
 
 app.use("/tasks", TaskRoute);
+
 
 
 app.listen(PORT, () => {

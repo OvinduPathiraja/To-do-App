@@ -4,7 +4,7 @@ import React from 'react';
 
 const ReusableButton = ({ children, onClick }) => {
   return (
-    <button className="rounded-xl p-2 border-blue-400 border-2 ml-2 hover:bg-sky-100" onClick={onClick}>
+    <button className="rounded-xl p-2 border-blue-400 border-[1px] ml-2 hover:bg-sky-100" onClick={onClick}>
       {children}
     </button>
   );

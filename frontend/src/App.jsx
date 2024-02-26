@@ -5,14 +5,18 @@ import Home from "./pages/Home.jsx";
 import ShowTask from "./pages/ShowTask.jsx";
 import AddTask from "./pages/AddTask.jsx";
 import UpdateTask from "./pages/UpdateTask.jsx";
+import Auth from "./pages/Auth.jsx";
+import Signup from "./pages/Signup.jsx";
 
 function App () {
   return(
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Auth />} />
+        <Route path="/signup" element={<Signup />} />
         <Route path="/addtask" element={<AddTask />} />
         <Route path="/taskinfo/:id" element={<ShowTask />} />
+        <Route path="/home" element={<Home />} />
 
       </Routes>
     </Router>
