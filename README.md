@@ -4,7 +4,7 @@
 - [Introduction](#introduction)
 - [Features](#features)
 - [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
+  - [Deployments](#deployments)
   - [Installation](#installation)
 - [Usage](#usage)
 - [Contributing](#contributing)
@@ -26,18 +26,40 @@ Welcome to To-Do App – a powerful and user-friendly task management solution t
 
 Guide users on how to set up and run your project on their local machines.
 
-### Prerequisites
+### Deployments
+Website - http://ec2-13-60-47-237.eu-north-1.compute.amazonaws.com
 
-List any software, libraries, or dependencies that users need to have installed before they can use your application.
+Backend - http://ec2-16-170-243-97.eu-north-1.compute.amazonaws.com/api/v1
+Backend git - https://github.com/OvinduPathiraja/TO-Do-Backend.git
 
 ### Installation
 
-Provide step-by-step instructions on how to install and set up your project. Include code snippets if necessary.
+Step-by-step instructions on how to install and set up your project. 
 
+Run the following command in your terminal of the local computer
 ```bash
-# Example installation command or code snippet
+git clone https://github.com/OvinduPathiraja/To-do-App.git
+```
+Install the npm in to the frontend and run the command
+```bash
+cd ./frontend
 npm install
 ```
+```bash
+npm run dev
+```
+The website will run in your local machine since the backend is running on a seperate EC2 instance in AWS. If need to run the backend locally as well
+
+```bash
+cd ..
+cd ./backend
+npm install
+```
+```bash
+npm run dev
+```
+
+
 <h1>To Do Application</h1>
 
 ![Screenshot 2024-02-26 075505](https://github.com/OvinduPathiraja/To-do-App/assets/128158494/ac3758ed-318d-4927-8c36-b0894c8175cb)
